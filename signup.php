@@ -5,19 +5,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = $_POST['username'];
     $password = $_POST['password'];
     $confirmPass = $_POST['confirmPass'];
-    if ($password == $confirmPass) {
-        try {
-            $sql = "INSERT INTO `users` (`username`, `password`) VALUES ( '$username', '$password');";
-            $result = mysqli_query($con, $sql);
-            if ($result) {
-                message("Sucessfully created with user name" . $username, "success");
-            }
-        } catch (\Throwable$th) {
-            message("user with " . $username . " exist", "danger");
+    $existSql = "SELECT * FROM `users` WHERE `username` = '$username'";
+    $existResult = mysqli_query($con, $existSql);
+    $existRows = mysqli_num_rows($existResult);
+    if ($existRows > 0) {
+        message("user with " . $username . " exist", "danger");
+    } else if ($password == $confirmPass) {
+        $sql = "INSERT INTO `users` (`username`, `password`) VALUES ( '$username', '$password');";
+        $result = mysqli_query($con, $sql);
+        if ($result) {
+            message("Sucessfully created with user name" . $username, "success");
         }
 
+    } else if ($password != $confirmPass) {
+        message("please provide correct password", "danger");
     }
+
 }
+
 ?>
 <!doctype html>
 <html lang="en">
