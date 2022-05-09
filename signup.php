@@ -1,31 +1,23 @@
 <?php
-include './_dbConnect.php';
 require './_dbConnect.php';
 require './Alert.php';
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = $_POST['username'];
     $password = $_POST['password'];
-    try {
-        $sql = "SELECT * FROM `users` WHERE `username` = '$username' AND `password` = '$password'";
-        $result = mysqli_query($con, $sql);
-        $num = mysqli_num_rows($result);
-        if ($num == 1) {
-            message("Sucessfully login" . $username, "success");
-            session_start();
-            $_SESSION['loggin'] = true;
-            $_SESSION['username'] = $username;
-            header("location: welcome.php");
-        } else {
-            message("invalid credential", "danger");
+    $confirmPass = $_POST['confirmPass'];
+    if ($password == $confirmPass) {
+        try {
+            $sql = "INSERT INTO `users` (`username`, `password`) VALUES ( '$username', '$password');";
+            $result = mysqli_query($con, $sql);
+            if ($result) {
+                message("Sucessfully created with user name" . $username, "success");
+            }
+        } catch (\Throwable$th) {
+            message("user with " . $username . " exist", "danger");
         }
 
-        //code...
-    } catch (\Throwable$th) {
-        //throw $th;
     }
-
 }
-
 ?>
 <!doctype html>
 <html lang="en">
@@ -36,8 +28,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-
-    <title>Auth</title>
+    <title>Sign up</title>
   </head>
   <body>
 <!-- Nav -->
@@ -45,6 +36,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 require './components/_nav.php';
 ?>
 <!-- Navbar end -->
+
 <div class="container">
   <?php
 if ($message) {
@@ -54,11 +46,12 @@ if ($message) {
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 </div>';
 }
+
 ?>
   <h4 class="text-center mt-4">
-   log in
+    Sign Up
   </h4>
-<form action="/phpAngkit/login.php" method="POST" class="row ">
+<form action="/phpAngkit/signup.php" method="POST" class="row">
   <div class="col-lg-5 mx-auto">
   <div class="mb-3">
     <label for="username" class="form-label">Username</label>
@@ -69,10 +62,16 @@ if ($message) {
     <label for="password" class="form-label">Password</label>
     <input type="password" name="password" class="form-control" id="password">
   </div>
-    <button type="submit" class="btn btn-primary">login</button>
+  <div class="mb-3">
+    <label for="confirmPass" class="form-label">Password</label>
+    <input type="password" name="confirmPass" class="form-control" id="confirmPass">
+  </div>
+    <button type="submit" class="btn btn-primary">signup</button>
   </div>
 </form>
 </div>
+
+    <!-- Option 1: Bootstrap Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
   </body>
 </html>

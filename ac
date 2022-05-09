@@ -1,0 +1,1 @@
+INSERT INTO `users` (`id`, `username`, `password`, `createdAt`) VALUES (NULL, 'angkithashamsa@gmail.com', 'angkithoajis21', current_timestamp());
