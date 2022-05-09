@@ -25,3 +25,4 @@ $player1 = new Player();
 $player1->set_name("Angkit");
 
 echo $player1->getName();
+echo $player1->speed;
