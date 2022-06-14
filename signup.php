@@ -11,7 +11,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($existRows > 0) {
         message("user with " . $username . " exist", "danger");
     } else if ($password == $confirmPass) {
-        $sql = "INSERT INTO `users` (`username`, `password`) VALUES ( '$username', '$password');";
+        $hash = password_hash($password, PASSWORD_DEFAULT);
+        $sql = "INSERT INTO `users` (`username`, `password`) VALUES ( '$username', '$hash');";
         $result = mysqli_query($con, $sql);
         if ($result) {
             message("Sucessfully created with user name" . $username, "success");

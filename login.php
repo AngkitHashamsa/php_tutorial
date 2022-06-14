@@ -6,17 +6,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = $_POST['username'];
     $password = $_POST['password'];
     try {
-        $sql = "SELECT * FROM `users` WHERE `username` = '$username' AND `password` = '$password'";
+        $sql = "SELECT * FROM `users` WHERE `username` = '$username' ";
+        // $Hashsql = "SELECT `password` FROM `users` WHERE `username` = '$username'";
         $result = mysqli_query($con, $sql);
         $num = mysqli_num_rows($result);
         if ($num == 1) {
-            message("Sucessfully login" . $username, "success");
-            session_start();
-            $_SESSION['loggin'] = true;
-            $_SESSION['username'] = $username;
-            header("location: welcome.php");
+            while ($row = mysqli_fetch_assoc($result)) {
+                // echo var_dump(password_verify($password, $row['password']));
+                if (password_verify($password, $row['password'])) {
+                    session_start();
+                    $_SESSION['loggin'] = true;
+                    $_SESSION['username'] = $username;
+                    header("location: welcome.php");
+                    message("Sucessfully login" . $username, "success");
+                } else {
+                    message("invalid password", "danger");
+                }
+            }
         } else {
-            message("invalid credential", "danger");
+            message("invalid username", "danger");
         }
 
         //code...
